@@ -75,7 +75,7 @@ void funkciaBR2() {
 char *funkciaBR3(char *pole[], int dlzka_pola) {
     int min = strlen(pole[0]), index_min = 0, i = 0; /* na zaciatku ma min. dlzku prvy retazec v poli */
     for (i=1;i<dlzka_pola;i++)
-        if (strlen(pole[i]) < min) {
+        if (strlen(pole[i]) <= min) {
             min = strlen(pole[i]);  /* nastavim novu min. dlzku */
             index_min = i;  /* zaznacim si index retazca, ktory ju ma */
         }
@@ -86,7 +86,19 @@ char *funkciaBR3(char *pole[], int dlzka_pola) {
  * do dynamicky alokovaneho pola, pricom velkost pola prisposobi poctu udajov (pouzite realloc).
  * Predpoklada sa, ze na prve miesto v poli ulozi pocet nacitanych cisel, a az za tym budu nasledovat
  * samotne nacitane cisla. Vrati smernik na vysledne pole cisel. */
-
+int *funkciaBP1(FILE *subor) {
+    int *pole, dlzka_pola=1, i=1, cislo;
+    
+    pole = malloc(sizeof(int));
+    pole[0] = 0;
+    while (fscanf(subor,"%d",&cislo)) {
+        dlzka_pola++;
+        pole = realloc(pole,sizeof(int)*dlzka_pola);
+        (pole[0])++;
+        pole[i++] = cislo; 
+    }
+    return pole;
+}
 /* BP2. Napiste funkciu, ktora do suboru s danym menom (parameter funkcie) zapise na koniec (pouzite
  * "append" mod otvorenia suboru) zadany retazec (druhy parameter). */
 void funkciaBP2(char *nazov_suboru, char *retazec) {
@@ -97,13 +109,23 @@ void funkciaBP2(char *nazov_suboru, char *retazec) {
 }
 /* BP3. Napiste funkciu. Vstupom je M x N matica a pole N cisel (rozmery staci napevno). Funkcia naplni
  * pole suctami hodnot v N stlpcoch matice. */
-
-/* Na fotke je este BONUSova otazka zamerana na tvorbu automatu, to sa mi riesit nechce. */
+#define M 3
+#define N 3
+void funkciaBP3(int matica[M][N], int pole[N]) {
+    int i,j;
+    for (i=0;i<M;i++)
+        for (j=0;j<N;j++)
+            pole[j] += matica[i][j];
+}
+/* Na fotke je este BONUSova otazka zamerana na tvorbu automatu. Nemam rad automaty. */
 
 /* testovaci main */
-int main(int argc, char **argv) { /* argc/argv kvoli ulohe BR3 */
+int main(int r, char **argv) { /* argc/argv kvoli ulohe BR3 */
     Triangle t;
     char slovo[] = "eduben akizyf andaiz zu";
+    int mat[M][N] = {{1,0,0},{1,1,0},{1,1,1}};
+    int i;
+    int pole[N]={0};
     //char *mena[] = { "hopla","afrika","belarus","pravitko","stol","izba","rozum","hipster","zazula","zubor","ypsilon"};
     t.a.x = 0;
     t.a.y = 0;
@@ -113,6 +135,9 @@ int main(int argc, char **argv) { /* argc/argv kvoli ulohe BR3 */
     t.c.y = 1;
     printf("%g\n",funkciaBS3(t));
     printf("%s\n",funkciaBR1(slovo));
-    printf("%s\n",funkciaBR3(argv,argc));
+    printf("%s\n",funkciaBR3(argv,r));
+    funkciaBP3(mat,pole);
+    for (i=0;i<N;i++)
+        printf("%d ",pole[i]);
     return 0;
 }
